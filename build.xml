@@ -1,0 +1,98 @@
+<project name="PerformanceBench" default="all" basedir=".">
+  <description>Performance Bench build script. Default target builds doc and jar file; optional zip or tar targets create full archive.</description>
+  <!-- set global properties for this build -->
+  <property name="rev" value="1.2"/>
+  <property name="author" value="mailto:davehentchel@gmail.com"/>
+  <property name="src" value="src"/>
+  <property name="build" value="bin"/>
+  <property name="libdir" value="lib"/>
+  <property name="docdir"  value="doc"/>
+  <property name="sampledir"  value="samples"/>
+  <property name="module"  value="PerformanceBench"/>
+  <property name="compileclasspath" value="/usr/local/lib/mysql-connector-java.jar;${CLASSPATH};" />
+  <property name="jarname"  value="bench.jar"/>
+
+  <target name="compile" description="Compile all Java source" >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" classpath="${compileclasspath}" destdir="${build}" includes="*.java" debug="on" listfiles="yes" includeantruntime="false"/>
+    <javac srcdir="${src}" classpath="${compileclasspath}" destdir="${build}" includes="build/*.java" debug="on" listfiles="yes" includeantruntime="false"/>
+    <javac srcdir="${src}" classpath="${compileclasspath}" destdir="${build}" includes="build/gen/*.java" debug="on" listfiles="yes" includeantruntime="false"/>
+  </target>
+
+  <target name="doc" description="generate Javadoc">
+    <javadoc sourcepath="${src}"
+           destdir="${docdir}"
+           classpath="${compileclasspath}"
+           overview="${src}/Bench_Overview.html"
+           package="false"
+           author="true"
+           version="true"
+           use="false"
+           breakiterator="yes"
+           verbose="no">
+		<doctitle><![CDATA[<h1 align="left" width="75">Performance Bench tools.</h1>]]></doctitle>
+		<fileset dir="${src}" defaultexcludes="yes">
+         <include name="*.java"/>
+		</fileset>
+		<packageset dir="${src}" defaultexcludes="yes">
+	      <include name="build/**" />
+		</packageset>
+    </javadoc>
+  </target>
+  
+  <target name="jar" depends="compile" description="Create jar file for the full package, including any extensions">
+    <mkdir dir="${libdir}"/>
+    <echo message="Building Test Harness rev ${rev}" />
+    <jar jarfile="${libdir}/${jarname}">
+        <fileset dir="${build}">
+          <include name="**/*.class" />
+        </fileset>
+    	<manifest>
+    	  <attribute name="Built-By" value="${author}"/>
+    	  <attribute name="Implementation-Title" value="Performance Bench"/>
+    	  <attribute name="Implementation-Version" value="${rev}"/> 
+    	  <attribute name="Implementation-Author" value="David Hentchel. All rights reserved."/>
+    	</manifest>
+    </jar>   
+      
+  </target>
+<!-- Currently the default target builds jar and doc; if desired, replace 'depends' with 'zip' and/or 'tar' to also build archive -->
+  <target name="all" depends="tidy,tar" description="Create jar file and documentation">
+    <echo message="Build complete." />
+  </target>
+
+  <target name="tar" depends="jar,doc" description="Create tar file">      
+    <tar destfile="../${module}${rev}.tar">
+      <tarfileset dir=".." mode="755">
+        <include name="${basedir}/${libdir}/${jarname}"  />
+        <include name="${basedir}/${sampledir}/**" />
+        <include name="${basedir}/${docdir}/**" />
+        <include name="${basedir}/${src}/**" />
+        <include name="${basedir}/README.txt" />
+        <include name="${basedir}/license_info.txt" />
+        <include name="${basedir}/build.xml" />
+        <include name="${basedir}/setenv*.*" />
+      </tarfileset>
+    </tar>
+  </target>
+
+  <target name="tidy" description="Remove Editor and build temp files">
+   <echo message="Deleting editor and build backup files" />
+    <fixcrlf srcdir="." includes="**/*.sh" eol="unix" eof="remove" />
+    <delete quiet="true">
+      <fileset dir="." includes="**/*~" defaultexcludes="no" />
+      <fileset dir="." includes="**/#*#" defaultexcludes="no" /> 
+      <fileset dir="." includes="**/fixcrlf-*" /> 
+      <fileset dir="./samples/out" includes="**" /> 
+    </delete>
+  </target>
+
+  <target name="clean" depends="tidy"
+          description="Remove class files and jars">
+    <delete verbose='true' failonerror="false" >
+      <fileset dir="${libdir}" includes="**/${jarname}" />
+      <fileset dir="${build}" includes="**/*.class" />
+    </delete>
+  </target>
+
+</project>

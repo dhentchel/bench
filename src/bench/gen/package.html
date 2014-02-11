@@ -1,0 +1,657 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+  
+  <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+
+  
+  <meta name="ProgId" content="FrontPage.Editor.Document">
+
+  
+  
+  <title>Using the Content Generator Package</title>
+  <meta content="Sonic performance utility for generating variable data content" name="description">
+
+  
+  <meta content="Sonic Software" name="author">
+</head>
+
+
+<body>
+
+<h2 style="text-align: center;"><font face="Arial">The Message
+Generator Utility</font></h2>
+
+<h3 style="text-align: center;">Package com.progress.perf.gen</h3>
+<p align="left"><font face="Arial"><font face="Arial" size="2">This
+section describes the steps for
+creating realistic, scalable datasets using the com.sonicsw.perf.gen
+package. This utility incorporates a variety of Java text management
+classes to
+generate a series of unique, methodically varying documents from a
+single
+template. The core technology is primitive Java String manipulation,
+using an
+XML Processing Instruction syntax. </font> </font></p>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">This
+package is included in the
+jar file for the full version of the Sonic TestHarness, but does not
+depend on TestHarness for execution.</font></font></p>
+
+<h3 align="left"><font face="Arial"><font face="Arial"><font size="3">Steps
+for generating a data
+set</font> </font> </font></h3>
+
+<ol>
+
+  <font face="Arial"> <li>
+    
+    <p align="left"><font face="Arial" size="2">Solicit from the user a
+sample of their XML document.</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">With the user's help,
+identify key data characteristics of the larger pool of documents the
+sample represents:<br>
+
+&nbsp;&nbsp;&nbsp;- Which elements and attributes are optional, and
+roughly how often they occur<br>
+
+&nbsp;&nbsp;&nbsp;- The typical minimum and maximum number of child
+elements for each parent element<br>
+
+&nbsp;&nbsp;&nbsp; -Important data keys, and the expected number of
+unique values<br>
+
+&nbsp;&nbsp;&nbsp; -Important text fields and examples of the kinds of
+text searches that would be done</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">Instrument the example
+with GenFile processing instructions</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">Create or obtain text
+files representing significant keywords and text fields</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">Demonstrate and revise
+the template until satisfactory:<br>
+
+&nbsp;&nbsp;&nbsp;- Generate a few sample documents (see the <a href="../com/exln/perf/util/GenXml.html#main"> GenFile.main method</a>)<br>
+
+&nbsp;&nbsp;&nbsp;- Review the readability and reasonability of the
+generated XML with a user<br>
+
+&nbsp;&nbsp;&nbsp;- Verify the document is correctly formed (for XML
+you can use Sonic Stylus Studio).</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">Use GenFile to generate
+one or more datasets based on the template. You can use the GenFile
+main method to write generated data directly to disk, or alternatively,
+you can create an instance of GenFile in a Java program and redirect
+the String or OutputStream output to any destination you choose.</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">If you are using the
+TestHarness, you can specify that the message generator use your new
+template by including the following test parameters:<br>
+
+&nbsp;&nbsp; - msgGenClass=TemplateMsgGenerator<br>
+
+&nbsp;&nbsp; - template=TEMPLATE_FILE</font></p>
+
+  </li>
+
+  </font>
+</ol>
+
+<h3 align="left"><font face="Arial"><font face="Arial" size="3">Using
+GenFile to create the data set</font></font></h3>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">The
+GenFile utility makes it easier to stress test XML and Messaging
+capabilities with the
+credibility of using realistic user data. You only need a single
+example of
+the user's XML, plus some insight into the size and range of important
+data
+attributes and elements, and GenFile will let you generate arbitrarily
+large data
+sets. It will also help you build-in interesting variations on the
+data, such as
+changes in schema and exception conditions.</font></font></p>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">GenFile
+allows you to substitute
+generated values for numeric keys, word/text and dates. Values can be
+random,
+methodically varied along a range, or sampled from a (Zipf) decay
+curve. You can
+also define user parameters to be entered at runtime. When you invoke
+the <i>generate</i>
+function, the GenFile implementation classes dynamically create these
+variable
+values and substitute them into the XML stream.&nbsp; As a result, you
+can use a
+single template to generate millions of unique documents that will
+yield
+predicatable, realistic result sets when querying. "Tricks" used by
+competitors to optimize extremely repetitive data won't work with this
+data set.
+Also, since it's so easy to generate huge data sets, we can ensure that
+tests
+scale up to the level where our competitors will have difficulty.</font></font></p>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">The
+format of a GenFile processing instruction is:</font></font></p>
+
+<blockquote> <font face="Arial"> </font>
+  
+  <p align="left"><font face="Arial"><b><font face="Courier New" size="2">&lt;?perf.CMD option1=val option2=val ... ?&gt;</font></b></font></p>
+
+</blockquote>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">Currently
+available commands include:</font></font></p>
+
+<ul>
+
+  <font face="Arial"> <li>
+    
+    <p align="left"><font face="Arial" size="2">perf.value - generates
+an integer with various range and order characteristics (see <a href="GenValue.java">GenValue</a>)</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">perf.date - generates
+dates in a variety of formats (see <a href="../com/exln/perf/util/GenDate.html">GenDate</a>)</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">perf.words - generates
+a string with a variable number of words drawn from a specified sample
+(see <a href="../com/exln/perf/util/GenWords.html">GenWords</a>)</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">perf.variable - allows
+you to insert a previously generated string (see <a href="../com/exln/perf/util/GenVariable.html">GenVariable</a>)</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">perf.begin - defines an
+optional or repeating block of text, and a <i>context</i> rule for
+defining values within that block (see <a href="../com/exln/perf/util/GenBlock.html">GenBlock</a>)</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">perf.end - the end of a
+perf.begin block</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">perf.file - includes an
+external GenFile template file, whose contents get folded into this
+one. (see <a href="../com/exln/perf/util/GenXml.html"> GenFile</a>)</font></p>
+
+  </li>
+
+  </font>
+</ul>
+
+<p align="left"><font face="Arial" size="2">Each
+command defines a GenFile <i>segment</i>,
+i.e. a range of text corresponding to a single GenSegment instance.
+Only GenBlock segments (demarcated by perf.begin and perf.end) can
+enclose child
+segments.&nbsp; Note that the parameters within a GenFile command are
+not true XML attributes and do not require quotes. Significant
+parameters
+include:</font></p>
+
+<ul>
+
+  <font face="Arial"> <li>
+    
+    <p align="left"><font face="Arial" size="2">name - identifies the
+GenFile segment and/or variable name</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">order - selects the
+distribution rule (<a href="#distributionOrder">see below</a>)</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">min - the smallest
+acceptable value for a generated number or a block cardinality</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">max - the largest value
+for the number or block cardinality</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">factor - a constant
+multiplier for computed values</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">range - a shorcut
+notation for min/max/factor, in format "1to99by3"</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">save - a Variable name
+used to save the generated string, for reuse via a GenVariable segment (<a href="#genVariable">see below</a>)</font></p>
+
+  </li>
+
+  </font>
+</ul>
+
+<font face="Arial"><font face="Arial" size="2">Other parameters apply
+to specific implementation
+classes.</font></font>
+<ul>
+
+  <font face="Arial"> <li>
+    
+    <p align="left"><font face="Arial" size="2">source
+- (GenWords, GenFile) an external file used for input, especially text
+keywords read in for use by GenWords</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">context - how to
+increment values within nested blocks for order=context value generation<br>
+
+    </font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">ratio
+- (GenBlock) decay ratio for repeating blocks<br>
+
+    </font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">while - (GenBlock)
+boolean expression
+telling whether to insert block</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">format - (GenValue)
+Java
+DecimalFormat string used to format the number</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">start - (GenDate)
+Formatted date
+string to use as starting value</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">time - (GenDate)
+replaced by
+additional 'type' enum values</font></p>
+
+  </li>
+
+  <li>
+    
+    <p align="left"><font face="Arial" size="2">default - (GenVariable)
+default value
+of variable </font></p>
+
+  </li>
+
+  </font>
+</ul>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">For
+an illustration of some of the more useful syntax supported by the
+generator</font><font face="Arial" size="2"> see
+./samples/templates/Sample.gen.</font></font></p>
+
+<h3 align="left"><font face="Arial"><font face="Arial" size="3"><a name="distributionOrder"></a>How text generation works</font></font></h3>
+
+<p>The STS <span style="font-style: italic;">gen</span> package is
+based on simple Java string substitution, combined with algorithms that
+let you specify rules for how inidividual text values are generated and
+combined. The input template is parsed by the GenFile class, which
+splits the input content in <span style="font-style: italic;">segments</span>
+as follows:<br>
+
+</p>
+
+<ul>
+
+  <li>A default GenBlock segement is defined to contain the entire
+structure<br>
+
+  </li>
+
+  <li>Each processing instruction (delimited by '&lt;?perf.XXX'&nbsp;
+and '?&gt;') is split into a GenSegment implementation</li>
+
+  <li>Any text existing in between processing instructions is lumped
+into default GenText segments</li>
+
+  <li>All text and processing instructions between perf.begin and
+perf.end instructions are nested within a GenBlock segment,
+hierarchically</li>
+
+  <li>Parameters within the instruction are whitespace-delimited
+name=value pairs; all non-whitespace characters are taken as literals,
+even quotes</li>
+
+  <li>If a nested GenFile instruction is encountered, this new file is
+parsed and inserted as a child block; you can build hierarchies of
+GenFile structures this way<br>
+
+  </li>
+
+</ul>
+
+<p>At runtime, each segment object maintains a running state which
+allows it to methodically vary output content, based on the rules
+described in the parameters.&nbsp; Keep in mind that, once parsed,
+there can be no changes to this structure - it is not a dynamically
+interpreted tree.&nbsp; However, you can use Variables to modify the
+value of a parameter during processing, as variables have 'late'
+binding. When you call the <span style="font-style: italic;">generate()</span>
+method on the GenFile object, it creates a buffered stream and passes
+the request down the hierarchy.&nbsp; Each GenBlock sets up a nested
+loop with the specified number of iterations, and invokes all its child
+segments within each loop.&nbsp; Thus each GenText segment simply
+copies the constant text into the buffer, the GenValue, GenWords and
+GenDate segments generate specialized data strings that are appended,
+and nested GenBlock segments set up a recursive iteration.&nbsp; The
+best way to understand this process is to run some examples and change
+the structures somewhat.<br>
+
+</p>
+
+<h3 align="left"><font face="Arial"><font face="Arial" size="3">Template
+blocks</font></font></h3>
+
+<p>GenBlock instructions within the template file allow you to
+methodically vary repeating content, such as repeating child elements
+in an XML document.&nbsp; You simply wrap the repeating part between
+perf.start and perf.end instructions, and all the text and generator
+instructions between will be repeated the specified number of
+times.&nbsp; If you specify a variable number of blocks using the <span style="font-style: italic;">range</span> or parameters, it will
+randomly vary the number of child blocks within that range. You can
+even skew the number of child blocks in one direction by using the <span style="font-style: italic;">ratio</span> parameter, which applies a
+probability ratio to each successive block being generated.&nbsp; For
+example, you could define a template that included a single child
+element 99% of the time, but 1% of the time repeated two or more times
+by specifying:<br>
+
+</p>
+
+<div style="margin-left: 40px;">&lt;?perf.start range=1to4 ratio=.01
+?&gt;<br>
+
+&nbsp;&nbsp;&nbsp; &lt;OrderAddr&gt;PO Box &lt;?gen.value
+range=100to999 ?&gt; &lt;/OrderAddr&gt;<br>
+
+&lt;?perf.end ?&gt;<br>
+
+</div>
+
+<p>Primary key values and other uniquely distinguished text fields are
+generally defined using the value <span style="font-style: italic;">context</span>,
+which is automatically generated.&nbsp; Normally, at the top level,
+this is a simple incrementing integer in the sequence {0,1,2,3...}.
+However, there are several ways this sequence can be modified:<br>
+
+</p>
+
+<ul>
+
+  <li>You can set the initial starting number using the <span style="font-style: italic;">start </span>option of GenFile; this is
+useful if you do repeated runs, but don't want primary keys colliding.</li>
+
+  <li>If a nested block uses 'context=combined', the context values
+will be factored up to make them unique; thus the repeating blocks will
+have context values something like {0,1,2}{3,4,5}{6,7,8}...</li>
+
+  <li>If you use the <span style="font-style: italic;">combined</span>
+rule but the number of child elements varies (see the <span style="font-style: italic;">ratio</span> and <span style="font-style: italic;">while </span>options), it skips values up
+to the max, e.g. {0,1,2,3}{4,5}{8,9,10}{12,13}; this keeps the modulus
+of generated child keys consistent.</li>
+
+  <li>If a nested block uses 'context=nested', then it resequences
+starting from zero:&nbsp; {0,1,2}{0,1,2}{0,1,2}</li>
+
+  <li>If the nested block uses 'context=incremental', the result is a
+strict iteration across the run:&nbsp; {0,1,2,3}{4,5}{6,7,8}{9,10},
+even if the number of child blocks is variable<br>
+
+  </li>
+
+</ul>
+
+<h3 align="left"><font face="Arial"><font face="Arial" size="3">Distribution
+order</font></font></h3>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">As
+noted, the <i>order</i> parameter defines the statistical
+distribution rule used for computing numeric values. This can be
+extremely
+important in controlling the behavior of query keys and ensuring that
+results
+mirror reality. There are several options for this param, which all
+compute a <i>long</i>
+value which is passed back to the segment. </font> <font face="Arial" size="2">You can use the <i>min</i>
+and <i>max </i>params to constrain the final value to the desired
+range.</font></font></p>
+
+<blockquote> <font face="Arial"> </font>
+  
+  <p align="left"><font face="Arial"><font face="Arial" size="2"><b><i>serial</i></b>
+- this will generate sequentially increasing numbers starting with zero.</font></font></p>
+
+  <font face="Arial"> </font>
+  
+  <p align="left"><font face="Arial"><font face="Arial" size="2"><b><i>context
+  </i></b>- inserts a context number provided by the parent segment;
+top-level context is simply an increasing integer, but each nested
+GenBlock can define its own <i>context</i> rule defining how context
+values for nested text will be computed.</font></font></p>
+
+  <font face="Arial"> </font>
+  
+  <p align="left"><font face="Arial"><font face="Arial" size="2"><i><b>random</b></i>
+- generates a random long integer; individual java.util.Random objects
+are used per-segment, to ensure that key values will be strictly
+repeatable, even if template code is moved around.</font></font></p>
+
+  
+  <p align="left"><font face="Arial"><font face="Arial" size="2"><i><b>logN
+  </b></i>- where <span style="font-style: italic;">N</span> is an
+integer, generates an</font></font><font face="Arial"><font face="Arial" size="2"> integer within the specified range with logarithmically
+decreasing occurance of greater size.</font></font></p>
+
+  
+  <p align="left"><font face="Arial"><font face="Arial" size="2"><i><b>zipf</b></i>
+- based on the <i>zipf</i> decay curve, which is a good approximation
+of the frequency distribution found in natural languages. This is the
+preferred distribution for GenWords, and can be used with any word list
+ordered by frequency of usage (i.e. most-common first). For specifics
+on how this distribution works, refer to the javadoc for <a href="../com/exln/perf/util/ZipfCreator.html">ZipfCreator</a>.<br>
+
+  </font></font></p>
+
+</blockquote>
+
+<h4 align="left"><font face="Arial"><font face="Arial"><a name="genVariable"></a>Variables</font></font></h4>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">You can
+define GenFile variables either explicitly, using a <i>perf.variable</i>
+instruction, or implicitly, by using the <i>save= </i>parameter on
+some other
+instruction. You can also pass name/value variable pairs directly to a
+GenFile
+object when you initialize it. This latter technique is used
+automatically by
+ABC&nbsp; test modules when the Framework config file includes a
+//Options/GenFile/GenVars
+option. The same variable may be reassigned multiple times, based on
+these
+inputs; see the <a href="../com/exln/perf/util/GenVariable.html">GenVariable</a>
+class doc for specifics. Note that the main program for GenFile also
+accepts
+variables as a runtime arg.</font></font></p>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">When you
+provide variable default values outside the template
+file, there are two ways of defining the name/value pairs:</font></font></p>
+
+<blockquote> <font face="Arial"> </font>
+  
+  <p align="left"><font face="Arial"><font face="Arial" size="2">Submit
+a string value enclosed in braces, e.g.:
+{DATE=4/11/99,MAX=100,Name=Fred}</font></font></p>
+
+  <font face="Arial"> </font>
+  
+  <p align="left"><font face="Arial"><font face="Arial" size="2">Identify
+a Properties file in the filesystem; the properties will be parsed
+using the standard Java Properties.load method and merged into the list
+of variables as the template is parsed.</font></font></p>
+
+</blockquote>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">It is
+generally possible to substitute a variable value for any
+numeric value used in template generation. For example, if you wanted
+to vary
+the minimum value according to a generated value, but set the maximum
+value when
+you invoke the template, you could use:</font></font></p>
+
+<blockquote>
+  
+  <p style="" align="left"><code>&lt;?perf.variable
+name=MAXVAL default=99 ?&gt;<br>
+
+&lt;?perf.value order=context save=MINVAL ?&gt;<br>
+
+&lt;?perf.block min=$MINVAL max=$MAXVAL ?&gt;</code></p>
+
+</blockquote>
+
+<p align="left"><font face="Arial"><font face="Arial" size="2">In this
+example, the MINVAL would increment each time the outer
+block looped, thus changing the minimum number of iterations for the
+inner
+block; the MAXVAL is set to a default of 99, but this could be
+overridden by
+explicitly defining it when the template is instantiated.&nbsp; When
+substituting numeric values, two built-in variables are provided:<br>
+
+</font></font></p>
+
+<ul>
+
+  <li><font face="Arial"><font face="Arial" size="2">$RANDOM will
+generate a random integer less than the DEFAULT_MAX_VALUE</font></font></li>
+
+  <li><font face="Arial"><font face="Arial" size="2">$ZIPF will
+generate the next available zipf integer</font></font></li>
+
+</ul>
+
+<font face="Arial"><font face="Arial" size="2">For example, you could
+vary the Time component of a date using built-in variables:<br>
+
+</font></font>
+<blockquote>
+  
+  <p style="" align="left"><code>&lt;?perf.date order=zipf type=ymdt
+start=01/01/$YEAR time=$RANDOM:$RANDOM:</code><code>$RANDOM</code><code>
+?&gt;<br>
+
+  </code></p>
+
+</blockquote>
+
+<br>
+
+<p align="center"><font face="Arial"><font face="Arial"><img src="../../../../images/sonic_logo_small.jpg" border="0" height="99" width="177"></font></font></p>
+
+<p align="center">
+<font face="Arial"><i>Copyright (c) 2004-2008 Progress Software
+Corporation,
+Inc. All Rights Reserved.</i></font></p>
+
+</body>
+</html>
