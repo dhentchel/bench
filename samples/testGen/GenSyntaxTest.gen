@@ -1,0 +1,105 @@
+<?gen.begin name=OuterBlock context=nested count=3 ?>
+GenBlock options:
+[ count=4 context=nested ]
+<?gen.begin min=1 max=4 context=nested ?><?gen.value order=context ?>, <?gen.end ?> 
+
+[ count=4 context=combined ]
+<?gen.begin min=1 max=4 context=combined ?><?gen.value order=context ?>, <?gen.end ?> 
+
+[ count=4 context=incremental ]
+<?gen.begin min=1 max=4 context=incremental ?><?gen.value order=context ?>, <?gen.end ?> 
+
+[ range=0to6by2 context=combined ]
+<?gen.begin range=0to6by2 context=combined ?><?gen.value order=context ?>, <?gen.end ?> 
+
+[ min=1 max=10 ratio=0.5 ]
+<?gen.begin min=1 max=10 ratio=0.5 context=nested ?><?gen.value order=context ?>, <?gen.end ?> 
+
+GenValue options:
+[ name=nX max=1000000 format=######0 or format=000000000000000 or format=###,###,###.0 ]
+ <?gen.value name=n1 order=random max=1000000 format=######0 ?> | <?gen.value name=n2 order=random max=1000000 format=000000000000000 ?> | <?gen.value name=n3 order=random max=1000000 format=###,###,###. ?> 
+
+[ order=serial max=100 ]
+ <?gen.begin count=10 ?><?gen.value order=serial max=100 ?>, <?gen.end ?> 
+
+[ order=random max=100 factor=10 ]
+ <?gen.begin count=100 ?><?gen.value order=random max=100 factor=10 ?>, <?gen.end ?> 
+ 
+[ order=zipf max=100 ]
+ <?gen.begin count=10 ?><?gen.value order=zipf max=1000 ?>, <?gen.end ?> 
+
+[ order=serial min=1 max=100 factor=3 ]
+ <?gen.begin count=10 ?><?gen.value order=serial min=1 max=100 factor=3 ?>, <?gen.end ?> 
+
+[ order=serial range=1to100by3 ]
+ <?gen.begin count=10 ?><?gen.value order=serial min=1 max=100 factor=3 ?>, <?gen.end ?> 
+
+[ order=zipf range=100to1000by11 ]
+ <?gen.begin count=10 ?><?gen.value order=zipf max=1000 ?>, <?gen.end ?> 
+
+GenDate options:
+[ type=mdy start=10/11/1912 time=14:43:39 order=context ] 
+ <?gen.begin count=10 ?><?gen.date order=context type=mdy start=10/10/1995 time=14:43:39 ?>, <?gen.end ?> 
+
+[ type=ymd start=10/11/1912 time=14:43:39 order=context ] 
+ <?gen.begin count=10 ?><?gen.date order=context type=ymd start=10/10/1995 time=14:43:39 ?>, <?gen.end ?> 
+
+[ type=ymdt start=10/11/1912 time=14:43:39 order=context ] 
+ <?gen.begin count=10 ?><?gen.date order=context type=ymdt start=10/10/1995 time=14:43:39 ?>, <?gen.end ?> 
+
+[ type=oagi start=10/11/1912 time=14:43:39 order=context ] 
+ <?gen.begin count=10 ?><?gen.date order=context type=oagi start=10/10/1995 time=14:43:39 ?>, <?gen.end ?> 
+
+[ type=ymd start=10/11/1912 time=14:43:39 order=context ] 
+ <?gen.begin count=10 ?><?gen.date order=context type=ymd start=10/10/1995 time=14:43:39 ?>, <?gen.end ?> 
+
+[ type=oagi start=1/1/2009 order=context ] 
+ <?gen.begin count=10 ?><?gen.date type=oagi start=1/1/2009 order=context ?>, <?gen.end ?> 
+
+[ type=mdy start=5/6/1990 order=zipf range=0to100by7 ] 
+ <?gen.begin count=100 ?><?gen.date type=mdy start=5/6/1990 order=zipf range=0to100by7 ?>, <?gen.end ?> 
+
+ 
+GenVariable options:
+
+[ name=CMDARG default=CMDARG_NOT_FOUND ]
+User arg CMDARG=<?gen.variable name=CMDARG default=CMDARG_NOT_FOUND ?>
+
+[ count=$WORDCOUNT ]
+Printing <?gen.variable name=WORDCOUNT default=2 ?> words:
+    <?gen.words count=$WORDCOUNT ?>
+
+[ name=V1 default=V1-dflt ]
+Default for V1=<?gen.variable name=V1 default=V1-dflt ?>
+
+[ save=V2 ]
+Using GenValue to set V2: <?gen.value save=V2 ?>
+
+[ source={V3=v3dflt,V4=foo} ]
+<?gen.variable source={V3=v3dflt,V4=foo}?>
+
+[ printing out variables V1, V2, V3... ]
+  V1=<?gen.variable name=V1 ?>, V2=<?gen.variable name=V2 ?>, V3=<?gen.variable name=V3  ?>, V4=<?gen.variable name=V4  ?>, V5=<?gen.variable name=V5  ?>
+
+
+GenWords options:
+
+[ count=10 order=random source=data\genxml\States.txt ]
+ <?gen.begin count=3 ?><postalcode><?gen.words order=random count=10 source=data\genxml\States.txt ?><?gen.end ?>  
+
+[ order=zipf source=data\genxml\words_10000.txt count=100 ]
+ <?gen.words order=zipf source=data\genxml\words_10000.txt count=100 ?>
+
+[ count=10 order=random source={a,b,c,d,e,f,g,h,i,j,k} ]
+ <?gen.words count=10 order=random source={a,b,c,d,e,f,g,h,i,j,k} ?>
+
+[ range=2to10 order=serial source={a,b,c,d,e,f,g,h,i,j,k} ]
+ <?gen.begin count=20 ?><?gen.words range=2to10 order=serial source={a,b,c,d,e,f,g,h,i,j,k}  ?>
+<?gen.end ?> 
+
+[ min=2 max=10 order=serial source={a,b,c,d,e,f,g,h,i,j,k} ]
+ <?gen.begin count=20 ?><?gen.words min=2 max=10 order=serial source={a,b,c,d,e,f,g,h,i,j,k}  ?>
+<?gen.end ?> 
+
+<?gen.end name=OuterBlock ?>
+

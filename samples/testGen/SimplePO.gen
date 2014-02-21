@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<order idnum="<?perf.value order=context format=000000 max=1000000 ?>">
+  <buyer acct="<?perf.value order=random range=0to500by5 save=BUYER_ID ?>">
+    <firstname><?perf.words count=1 source=FirstNames.txt ?></firstname>
+    <lastname><?perf.words count=1 source=LastNames.txt ?></lastname>
+ <?perf.comment Make company ID the same as Buyer ID for this test. ?>
+    <company companyID="<?perf.variable name=BUYER_ID ?>"</company>
+  </buyer>
+   <?perf.begin name=LineitemBlock range=6to14 context=nested ?>
+   <lineitem id="<?perf.value order=context ?>">
+     <datesold><?perf.date order=context type=ymd start=10/10/1995 ?></datesold>
+     <product><?perf.words order=log2 count=1 source=Items.txt ?></product>
+     <quantity><?perf.value order=random max=100 ?></quantity>
+     <description><?perf.words source=EnglishWords.txt range=10to200 ?></description>
+   </lineitem>
+   <?perf.end name=LineitemBlock ?>
+</order> 

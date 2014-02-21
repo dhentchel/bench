@@ -1,0 +1,22 @@
+Atlanta
+Baltimore
+Boston
+Chicago
+Cleveland
+Dallas
+Denver
+Detroit
+Honolulu
+Houston
+"Los Angeles"
+"New Orleans"
+"New York"
+Orlando
+"St. Louis"
+"San Diego"
+"San Francisco"
+Seattle
+Washington
+London
+Paris
+Tokyo

@@ -1,0 +1,15 @@
+Red
+Black
+Green
+Orange
+Purple
+White
+Gray
+Yellow
+Beige
+Pink
+Brown
+Gold
+Silver
+Amber
+Chartreuse

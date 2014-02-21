@@ -1,0 +1,2 @@
+use test;
+select count(*) from PRODUCT;

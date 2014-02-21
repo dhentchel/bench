@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<order idnum="<?gen.value order=context format=#0 ?>" incomingtimestamp="<?gen.value order=random format=000000000000000 ?>">
+ <buyer acct="<?gen.value order=random format=000 max=500 save=BUYER_ID ?>">
+  <contact>
+   <email>person<?gen.variable name=BUYER_ID ?>@notmail.com</email>
+   <firstname><?gen.words max=1 source=../lists/FirstNames.txt ?></firstname>
+   <lastname><?gen.words max=1 source=../lists/LastNames.txt ?></lastname>
+   <company>Company<?gen.variable name=BUYER_ID ?></company>
+   <address1><?gen.variable name=BUYER_ID ?> Elm St.</address1>
+   <address2/>Suite 2613 East<address3/>
+   <city>City<?gen.value order=random format=00 max=20 ?></city>
+   <stateprov><?gen.words count=1 order=random source=../lists/StateCodes.txt ?></stateprov>
+   <postalcode><?gen.value order=random format=00000 max=99999 ?></postalcode>
+   <country>USA</country>
+   <phone>(1) 999.555.<?gen.value order=random format=0000 max=10000 ?></phone>
+   <fax>(1) 999.555.<?gen.value order=serial format=0000 max=10000 ?></fax>
+  </contact>
+ </buyer>
+<?gen.begin name=LineitemBlock min=0 max=7 context=combined ?>
+ <lineitem ref="<?gen.value order=context format=#0 ?>">
+  <manufacturer></manufacturer>
+  <datesold><?gen.date order=context type=oagi start=10/10/1995 time=14:43:39 ?></datesold>
+  <dateshipped><?gen.date order=context type=oagi start=10/17/1995 time=13:44:59 ?></dateshipped>
+  <datereceived><?gen.date order=context type=oagi start=10/24/1995 time=4:09:00 ?></datereceived>
+  <name><?gen.words count=1 source=../lists/Items.txt ?></name>
+  <quantity><?gen.value order=random max=100 ?></quantity>
+  <cost><?gen.value order=random max=10000 ?></cost>
+  <origin>Warehouse East2</origin>
+  <specifications>
+   <specification name="weight-lbs"><?gen.value order=random max=10000 ?></specification>
+   <specification name="box-width-cm"><?gen.value order=random range=4to100by2 ?></specification>
+  </specifications>
+  <description>
+   <shortdescription><?gen.words order=zipf source=../lists/EnglishWords.txt count=10 ?></shortdescription>
+  </description>
+  <includes>Shipping and Handling</includes>
+  <process id="<?gen.value order=random max=100 ?>">
+   <currentstatus><?gen.words count=1 order=random source=../lists/StatusCodes.txt ?></currentstatus>
+   <ETA/>
+  </process>
+ </lineitem>
+<?gen.end name=LineitemBlock ?>
+</order>
+

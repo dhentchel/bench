@@ -1,0 +1,24 @@
+# For a complete list see: http://www.jhall.demon.co.uk/currency/by_abbrev.html
+USD
+EUR
+GBP
+JPY
+RUR
+CAD
+SGD
+ANG
+ZAL
+NZD
+THB
+CZK
+ARP
+TRL
+PLN
+MXN
+EGP
+UAH
+SAR
+SEK
+VEB
+BOP
+AED

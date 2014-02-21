@@ -1,0 +1,11 @@
+Laptop
+Hub
+Pencil
+FordTruck
+BlankPaper
+Oranges
+TVDinner
+CellPhone
+"Coffee Mug"
+Bicycle
+# for a list of elec products, see http://www.wolfbane.com/tv.htm

@@ -1,0 +1,9 @@
+# Status codes for Purchase Orders, in order by frequency
+PaidUp
+Shipped
+Cancelled
+Pending
+InTrouble
+Lost
+Found
+

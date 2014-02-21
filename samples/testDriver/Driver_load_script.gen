@@ -1,0 +1,22 @@
+-- Database name is <?gen.variable name=DB_NAME default=test ?>;
+-- Number of Inventory records = <?gen.variable name=INV_COUNT default=10000 ?>;
+use <?gen.variable name=DB_NAME ?>;
+DROP TABLE IF EXISTS PRODUCT;
+CREATE TABLE PRODUCT (PROD_KEY int NOT NULL AUTO_INCREMENT, PRODUCT_ID int NOT NULL, PROD_NAME varchar(64) NOT NULL, PROD_DESC varchar(512) NOT NULL, PRIMARY KEY (`PROD_KEY`)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+PREPARE load_prod FROM 'INSERT into PRODUCT (PRODUCT_ID, PROD_NAME, PROD_DESC) VALUES (?, ?, ?)'
+DROP TABLE IF EXISTS SUPPLIER;
+CREATE TABLE SUPPLIER (SUPP_KEY int NOT NULL AUTO_INCREMENT, SUPP_NAME varchar(64) NOT NULL, SUPP_ADDRESS varchar(512) NOT NULL, PRIMARY KEY (`SUPP_KEY`)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+PREPARE load_supp FROM 'INSERT into SUPPLIER (SUPP_NAME, SUPP_ADDRESS) VALUES (?, ?)'
+DROP TABLE IF EXISTS INVENTORY;
+CREATE TABLE INVENTORY (INV_KEY int NOT NULL AUTO_INCREMENT, INV_PRODUCT int NOT NULL, INV_SUPPLIER varchar(64) NOT NULL, INV_PRICE decimal(10,2), INV_AVAIL int, PRIMARY KEY (`INV_KEY`)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+PREPARE load_inv FROM 'INSERT into INVENTORY (INV_PRODUCT, INV_SUPPLIER, INV_PRICE, INV_AVAIL) VALUES (?, ?, ?, ?);'
+<?gen.begin name=LoadProd count=100 context=combined ?>
+EXECUTE load_prod USING <?gen.value order=serial min=1000000  format=# ?>, '<?gen.words count=1 order=random source=test/LastNames.txt ?>', '<?gen.words count=1 source={Inc,Corp,LLC,Ltd.,Company} ?>';
+<?gen.end name=LoadProd ?>
+<?gen.begin name=LoadSupp count=400 context=combined ?>
+EXECUTE load_supp USING '<?gen.words count=1 order=serial source=test/CompanyNames.txt ?>', '<?gen.value order=zipf min=1 max=9999 format=00 ?> <?gen.words count=1 order=random source=test/StreetNames.txt ?> <?gen.words count=1 order=random source=test/CityNames.txt ?> <?gen.words count=1 order=random source=test/StateCodes.txt ?>';
+<?gen.end name=LoadSupp ?>
+<?gen.begin name=LoadInv count=$INV_COUNT context=combined ?>
+EXECUTE load_inv USING <?gen.value order=zipf range=1000000to1000100  format=# ?>, '<?gen.words count=1 order=random source=test/CompanyNames.txt ?>', <?gen.value order=zipf min=1 max=1000 ?>.<?gen.value order=zipf min=0 max=99 format=00 ?>, <?gen.value order=zipf min=0 max=99999 format=00000 ?>
+<?gen.end name=LoadInv ?>
+quit
