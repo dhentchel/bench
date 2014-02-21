@@ -1,7 +1,7 @@
 -- Database name is <?gen.variable name=DB_NAME default=test ?>;
--- Number of Inventory records = <?gen.variable name=INV_COUNT default=10000 ?>;
+-- Number of Inventory records = <?gen.variable name=INV_COUNT default=100000 ?>;
 use <?gen.variable name=DB_NAME ?>;
-<?gen.begin name=ProdQueryBlock count=5000 context=nested ?>
+<?gen.begin name=ProdQueryBlock count=125000 context=nested ?>
 SELECT * FROM PRODUCT WHERE PRODUCT_ID = '<?gen.value format=000000 order=context save=PRODID ?>'
 SELECT PROD_NAME, PROD_DESC, INV_AVAIL, INV_PRICE, INV_SUPPLIER FROM PRODUCT p, INVENTORY i WHERE p.PRODUCT_ID = '<?gen.variable name=PRODID ?>' and p.PRODUCT_ID = i.INV_PRODUCT
 UPDATE INVENTORY SET INV_AVAIL=<?gen.value order=zipf min=0 max=99999 format=00000 ?> WHERE INV_KEY = <?gen.value order=zipf range=1to$INV_COUNT ?>

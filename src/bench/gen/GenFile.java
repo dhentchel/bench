@@ -159,10 +159,13 @@ extends GenSegmentBase
 			while ((charsRead = in.read(cbuf,0,CBUF_SIZE)) >= 0)
 			{
 				totalSize += charsRead;
-				if (totalSize > 99999999)
+				if (totalSize > 99999999) {
+					in.close();
 					throw new RuntimeException("GenFile: Template buffer too big.");
+				}
 				buffer.append(cbuf,0,charsRead);
 			}
+			in.close();
 			String template = buffer.toString();
 			parseString(template);
 			return totalSize;

@@ -48,7 +48,7 @@ import java.util.Vector;
  * </ol></p>
  * <p>To add a new parameter type at runtime, you simply include it on the command line as a name/value
  * pair, e.g.:
- * <pre><br><t>java com.parelastic.bench.Driver -props in.prop myParam=4,otherParam=England<br></pre>
+ * <pre><br><t>java bench.Driver -props in.prop myParam=4,otherParam=England<br></pre>
  * Programatically, you add new parameters by invoking one of the static TestParam.add methods. Note that
  * the way parameters are displayed in printouts and prompts will correspond to the sequence in which they
  * are created, and these displays will be broken into categories based on the category string names entered
@@ -399,7 +399,7 @@ extends Properties
 	 */
 	public void usage ( boolean isLongVersion )
 	{
-		System.err.println("usage: java com.parelastic.bench.Driver [options ...] [prop=VAL] ...\n\n");
+		System.err.println("usage: java bench.Driver [options ...] [prop=VAL] ...\n\n");
 		System.err.println("options:\n");
 		System.err.println("  -help             Print this help text.\n");
 		System.err.println("  -verbose          Prints more detailed help, status and error messages.\n");
@@ -560,7 +560,7 @@ extends Properties
 		TestParam.add("password", "Password for database connection", "password", "string", "String value of database login user password.", "","");
 		
 		TestParam.addCategory("Script options");
-		TestParam.add("scriptclass", "Java class for Script implementation", "com.parelastic.bench.GenScript", "string", "Implementation of com.parelastic.bench.Script to be used to generate SQL commands.", "", "");
+		TestParam.add("scriptclass", "Java class for Script implementation", "bench.GenScript", "string", "Implementation of bench.Script to be used to generate SQL commands.", "", "");
 		TestParam.add("runscriptvars", "Script variables", "none", "string", "Either a) a pathname to a Properties file, or b) a list in format: '{var1=val1,var2=val2,...}'", "","");
 		TestParam.add("runscriptfile", "SQL Generator Script File Path", "./sql_script.gen", "string", "Filesystem path for a bench.gen text generation script; output must be a list of valid SQL commands.", "", "");
 		TestParam.add("loadscriptvars", "Script variables for load", "none", "string", "Either a) a pathname to a Properties file, or b) a list in format: '{var1=val1,var2=val2,...}'", "","");

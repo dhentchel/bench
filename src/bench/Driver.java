@@ -59,6 +59,7 @@ public class Driver implements Runnable, Client.ClientManager {
 		_numclients = _context.getInt("numclients");
 		_client = new HashMap<Long, Client>();
 		_clientState = new HashMap<Long, ClientState>();
+		_runFlag = new AtomicBoolean(false);
 	}
 
 	public void exec_load ( ) {
@@ -82,9 +83,9 @@ public class Driver implements Runnable, Client.ClientManager {
 		System.err.println("Starting client test threads.");
 		for (int threadNum=0; threadNum < _numclients; threadNum++) {
 			long clientID = computeClientID(_context, threadNum);
+			_clientState.put(clientID, ClientState.NONE);
 			Client client = new Client(_context, threadNum, this);
 			_client.put(clientID, client);
-			_clientState.put(clientID, ClientState.NEW);
 	        Thread t = new Thread(_allThreads, client);
 	        t.start();
 		}
@@ -116,12 +117,12 @@ public class Driver implements Runnable, Client.ClientManager {
 		System.out.println("\nPeriod\tOps/sec\tReads\tWrites\t#Errs");
 		try {
 			while (running()) {
-				synchronized (_clientFinishedCount) {
+				synchronized (_clientState) {
 					if (_clientFinishedCount.get() > MAX_IGNORED_CLIENTS) {
 						_runFlag.set(false);
 						System.err.println("Driver:  Terminating early because too many clients ended or aborted before all cycles completed.");
 					} else {
-						_clientState.wait(intervalSecs);
+						_clientState.wait(intervalSecs * 1000);
 					}
 				}
 
@@ -150,7 +151,7 @@ public class Driver implements Runnable, Client.ClientManager {
 					_runFlag.set(false);
 			}
 		} catch (Exception e) {
-			System.err.println("FATAL: " + e.getLocalizedMessage());
+			System.err.println("FATAL in Driver: " + e.getClass().getName() + "\n\t" + e.getMessage());
 		}
 	}
 
@@ -207,13 +208,16 @@ public class Driver implements Runnable, Client.ClientManager {
 	public void setState(long clientID, ClientState state) {
 		synchronized (_clientState) {
 			ClientState oldState = _clientState.get(clientID);
-			if (oldState == ClientState.NEW) {
+			if (oldState == ClientState.NONE) {
+				if (state != ClientState.NEW)
+					throw new RuntimeException(String.format("Driver: Invalid state transition: %s to %s", oldState, state));
+			} else if (oldState == ClientState.NEW) {
 				if (state == ClientState.READY) {
 					long newReadyCount = _clientReadyCount.incrementAndGet();
 					if (newReadyCount >= _numclients) // trigger when all clients are ready
 						synchronized(_clientReadyCount) {
 							_clientReadyCount.notify();
-						}
+					}
 				} else					
 					throw new RuntimeException(String.format("Driver: Invalid state transition: %s to %s", oldState, state));
 			} else if (oldState == ClientState.READY) {
@@ -238,9 +242,10 @@ public class Driver implements Runnable, Client.ClientManager {
 							_clientFinishedCount.notify();
 						}
 				}
-			} else
+			} else {
 				throw new RuntimeException(String.format("Driver: Invalid state transition: %s to %s", oldState, state));
-				
+			}
+			_clientState.put(clientID, state);
 		}
 	}
 

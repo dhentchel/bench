@@ -1,5 +1,5 @@
 -- Database name is <?gen.variable name=DB_NAME default=test ?>;
--- Number of Inventory records = <?gen.variable name=INV_COUNT default=10000 ?>;
+-- Number of Inventory records = <?gen.variable name=INV_COUNT default=100000 ?>;
 use <?gen.variable name=DB_NAME ?>;
 DROP TABLE IF EXISTS PRODUCT;
 CREATE TABLE PRODUCT (PROD_KEY int NOT NULL AUTO_INCREMENT, PRODUCT_ID int NOT NULL, PROD_NAME varchar(64) NOT NULL, PROD_DESC varchar(512) NOT NULL, PRIMARY KEY (`PROD_KEY`)) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

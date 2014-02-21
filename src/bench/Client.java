@@ -30,10 +30,13 @@ public class Client implements Runnable {
 	public Client( TestContext ctx, long clientID, ClientManager manager ) {
 		_ctx = ctx;
 		_clientID = clientID;
-		_manager = manager;
-		_manager.setState(_clientID, ClientState.NEW);
+		if (manager == null)
+			_manager = new SimpleClientManager();
+		else
+			_manager = manager;
 		_dbmgr = new DatabaseManager(_ctx);
 		_session = new Session(_dbmgr, _clientID);	
+		_manager.setState(_clientID, ClientState.NEW);
 	}
 
 	public TestStats getStats() { return new TestStats(_session); }
@@ -71,7 +74,7 @@ public class Client implements Runnable {
 		Script runScript = Script.launchScript(_ctx.getString("scriptclass"), _ctx.getString("runscriptfile"), _clientID, _ctx.getString("runscriptvars"));
 		_manager.setState(_clientID, ClientState.READY);
 		while (true) {
-			synchronized(_ctx) {
+			synchronized(_manager) {
 				try { _manager.wait(1000); }
 				catch (InterruptedException e) { ; }
 			}
@@ -128,7 +131,22 @@ public class Client implements Runnable {
 		client.load();
 	}
 
+	/**
+	 * The client state is set by the client thread to communicate its state to the ClientManager.
+	 * Client states have the following general meanings:
+	 * <ol><li>NONE - optional empty state before the client is instantiated</li>
+	 * <li>NEW - Client has instantiated itself, including a successful database connection</li>
+	 * <li>LOADING - Client is in the process of loading the database</li>
+	 * <li>READY - Client thread is ready to begin a test run</li>
+	 * <li>RUNNING - Test run is in progress</li>
+	 * <li>ABORTED - Client has aborted and will clean up</li>
+	 * <li>DONE - Test run or abort processing is finished the the client thread can be destroyed</li>
+	 * </ol>
+	 * @author dhentchel
+	 *
+	 */
 	public enum ClientState {
+		NONE,
 		NEW,
 		LOADING,
 		READY,
@@ -147,4 +165,21 @@ public class Client implements Runnable {
 		public void setState ( long clientID, ClientState state);
 	}
 	
+	public static class SimpleClientManager implements ClientManager {
+		private ClientState _state = ClientState.NEW;
+		
+		@Override
+		public boolean running() {
+			if (_state == ClientState.RUNNING)
+				return true;
+			else
+				return false;
+		}
+
+		@Override
+		public void setState(long clientID, ClientState state) {
+			_state = state;
+		}
+		
+	}
 }
